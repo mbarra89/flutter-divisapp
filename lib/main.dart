@@ -22,8 +22,8 @@ class DivisApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'DivisApp',
-      // theme: AppTheme.lightTheme(),
-      theme: AppTheme.darkTheme(),
+      theme: AppTheme.lightTheme(),
+      // theme: AppTheme.darkTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
       routerConfig: router,
