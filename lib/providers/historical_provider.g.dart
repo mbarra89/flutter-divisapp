@@ -6,7 +6,7 @@ part of 'historical_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$historicalSeriesHash() => r'0f3236c532291dceebd39130db367533e3b5e208';
+String _$historicalSeriesHash() => r'43e59497ea1837331bd8c77ea0664ade0212b7f9';
 
 /// Copied from Dart SDK
 class _SystemHash {

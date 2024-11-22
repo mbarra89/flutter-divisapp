@@ -95,4 +95,15 @@ class HistoricalSeries extends _$HistoricalSeries {
           entry.fecha.isBefore(range.end);
     }).toList();
   }
+
+  double getDailyChange() {
+    if (state.value == null || state.value!.series.length < 2) {
+      return 0.0;
+    }
+
+    final series = state.value!.series;
+    final today = series.last.valor;
+    final yesterday = series[series.length - 2].valor;
+    return ((today - yesterday) / yesterday * 100);
+  }
 }
