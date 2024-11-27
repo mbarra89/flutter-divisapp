@@ -1,11 +1,10 @@
 import 'package:divisapp/models/currency_view_model.dart';
 import 'package:divisapp/providers/currency_provider.dart';
+import 'package:divisapp/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:divisapp/widgets/currency_grid.dart';
-import 'package:divisapp/widgets/update_info_header.dart';
 
-/// Pantalla principal que muestra la lista de divisas
 class CurrencyScreen extends ConsumerWidget {
   const CurrencyScreen({super.key});
 
@@ -25,7 +24,6 @@ class CurrencyScreen extends ConsumerWidget {
   }
 }
 
-/// Vista que muestra la lista de divisas
 class _CurrencyListView extends StatefulWidget {
   final List<CurrencyViewModel> currencies;
   final Future<void> Function() onRefresh;
@@ -59,41 +57,43 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
         .toList();
   }
 
+  // Método para construir el campo de búsqueda
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchController,
+      decoration: const InputDecoration(
+        hintText: 'Buscar por nombre de moneda',
+        prefixIcon: Icon(Icons.search),
+        border: InputBorder.none,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+      onChanged: (value) {
+        setState(() {
+          _searchQuery = value;
+        });
+      },
+    );
+  }
+
+  // Método para construir el AppBar completo
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: AppTheme.darkButtonColor,
+      title: _buildSearchField(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: widget.onRefresh,
-      child: Column(
-        children: [
-          const UpdateInfoHeader(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Buscar por nombre de moneda',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: CurrencyGrid(currencies: _filteredCurrencies),
-          ),
-        ],
+    return Scaffold(
+      // Utilizamos el nuevo método para construir el AppBar
+      appBar: _buildAppBar(),
+      body: RefreshIndicator(
+        onRefresh: widget.onRefresh,
+        child: CurrencyGrid(currencies: _filteredCurrencies),
       ),
     );
   }
@@ -102,22 +102,25 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
 /// Vista de error
 class _ErrorView extends StatelessWidget {
   final Object error;
+
   const _ErrorView({required this.error});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 48, color: Colors.red),
-          const SizedBox(height: 16),
-          Text(
-            'Error: $error',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ],
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Error: $error',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -129,8 +132,10 @@ class _LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

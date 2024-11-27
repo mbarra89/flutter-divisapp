@@ -22,8 +22,7 @@ class DivisApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'DivisApp',
-      theme: AppTheme.lightTheme(),
-      // theme: AppTheme.darkTheme(),
+      theme: AppTheme.darkTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
       routerConfig: router,
@@ -37,7 +36,7 @@ class DivisApp extends ConsumerWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _getStatusBarStyle(themeMode),
       child: Scaffold(
-        appBar: _buildAppBar(context, themeMode),
+        // appBar: _buildAppBar(context, themeMode),
         body: child,
       ),
     );

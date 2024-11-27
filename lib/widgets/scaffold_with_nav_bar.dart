@@ -1,3 +1,4 @@
+import 'package:divisapp/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -46,7 +47,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
   Widget _buildNavigationBar(BuildContext context, bool isDarkMode) {
     return Container(
       decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF1A2636) : const Color(0xFF3B82F6),
+        color:
+            isDarkMode ? AppTheme.darkNavBarColor : AppTheme.lightNavBarColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),

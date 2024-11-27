@@ -1,29 +1,81 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color primaryColor = Color(0xFF1A237E);
-  static const Color secondaryColor = Color(0xFF303F9F);
-  static const Color accentColor = Color(0xFF3949AB);
+  static const Color primaryColor =
+      Color(0xFF2C6B4F); // Verde oscuro, profesional y confiable
+  static const Color secondaryColor =
+      Color(0xFF4D9A6B); // Verde más saturado para énfasis
+  static const Color accentColor =
+      Color(0xFF66C58B); // Verde brillante para elementos destacados
 
-  static const Color backgroundColor = Color(0xFFF8F9FC);
-  static const Color lightBackgroundColor = Color(0xFFFFFFFF);
-  static const Color darkBackgroundColor = Color(0xFF121212);
+// Escala de grises y fondos neutrales
+  static const Color backgroundColor =
+      Color(0xFFF2F4F8); // Gris claro con contraste sutil
+  static const Color lightBackgroundColor =
+      Color(0xFFFFFFFF); // Blanco puro para máxima claridad
+  static const Color darkBackgroundColor =
+      Color(0xFF101317); // Negro ahumado para temas oscuros
 
-  static const Color lightSurfaceColor = Color(0xFFFFFFFF);
-  static const Color darkSurfaceColor = Color(0xFF1E1E1E);
+// Superficies y texto
+  static const Color lightSurfaceColor =
+      Color(0xFFE6EBF1); // Gris claro con mayor contraste para fondos elevados
+  static const Color darkSurfaceColor =
+      Color(0xFF1A1D21); // Gris oscuro que no se mezcla con el fondo principal
+  static const Color textColor =
+      Color(0xFF1C1F26); // Gris oscuro muy legible para texto principal
+  static const Color lightTextColor =
+      Color(0xFF5A6473); // Gris medio para texto secundario
+  static const Color darkTextColor =
+      Color(0xFFF4F5F7); // Blanco puro para texto en temas oscuros
 
-  static const Color textColor = Color(0xFF1A1A1A);
-  static const Color lightTextColor = Color(0xFF2C2C2C);
-  static const Color darkTextColor = Color(0xFFF5F5F5);
+// Colores de estado
+  static const Color errorColor =
+      Color(0xFFB00020); // Rojo profesional con suficiente contraste
+  static const Color successColor =
+      Color(0xFF27AE60); // Verde más intenso para éxito
+  static const Color warningColor =
+      Color(0xFFFFB020); // Amarillo con más contraste para advertencias
+  static const Color infoColor =
+      Color(0xFF6C757D); // Gris suave para información
 
-  static const Color errorColor = Color(0xFFD32F2F);
-  static const Color successColor = Color(0xFF388E3C);
-  static const Color warningColor = Color(0xFFF57C00);
-  static const Color infoColor = Color(0xFF1976D2);
+// Indicadores económicos
+  static const Color upIndicatorColor =
+      Color(0xFF27AE60); // Verde vibrante para indicadores en alza
+  static const Color downIndicatorColor =
+      Color(0xFFE74C3C); // Rojo brillante para indicadores a la baja
 
-  static const Color lightButtonColor = Color(0xFF1A237E);
-  static const Color darkButtonColor = Color(0xFF3949AB);
-  static const Color buttonTextColor = Color(0xFFFFFFFF);
+// Botones
+  // Modo claro
+  static const Color lightButtonColor =
+      Color(0xFF1A6F32); // Verde oscuro elegante
+
+// Modo oscuro
+  static const Color darkButtonColor =
+      Color(0xFF2C2C34); // Fondo de botón con color más oscuro y neutral
+
+// Texto en botones
+  static const Color buttonTextColor =
+      Color(0xFFFFFFFF); // Blanco puro para texto en contraste
+
+// Navegación
+  // Modo claro
+  static const Color lightNavBarColor =
+      Color(0xFFD1D9E6); // Gris medio claro con contraste notable
+
+// Modo oscuro
+  static const Color darkNavBarColor =
+      Color(0xFF1A1C23); // Gris oscuro con un tono más definido
+
+  // Modo claro
+  static const Color lightCardBackground = Color(0xFFFFFFFF); // Blanco puro
+  static const Color lightCardShadow =
+      Color(0x1A000000); // Negro con 10% de opacidad para sombra sutil
+
+// Modo oscuro
+  static const Color darkCardBackground =
+      Color(0xFF2E3B31); // Verde oscuro neutro para el modo oscuro
+  static const Color darkCardShadow =
+      Color(0x66000000); // Negro con 40% de opacidad para sombra más marcada
 
   static ThemeData lightTheme() {
     return _buildTheme(Brightness.light);

@@ -1,8 +1,10 @@
 import 'package:divisapp/models/currency_view_model.dart';
 import 'package:divisapp/providers/historical_provider.dart';
+import 'package:divisapp/theme/app_theme.dart';
+import 'package:divisapp/widgets/currency_graph_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class CurrencyDetailScreen extends ConsumerWidget {
   final CurrencyViewModel currency;
@@ -13,234 +15,203 @@ class CurrencyDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final historicalData = ref.watch(historicalSeriesProvider(currency.codigo));
 
-    return historicalData.when(
-      data: (data) {
-        final minValue = ref
-            .read(historicalSeriesProvider(currency.codigo).notifier)
-            .getMinValue();
-        final maxValue = ref
-            .read(historicalSeriesProvider(currency.codigo).notifier)
-            .getMaxValue();
-        final dailyChange = ref
-            .read(historicalSeriesProvider(currency.codigo).notifier)
-            .getDailyChange();
-
-        final isPositiveChange = dailyChange >= 0;
-
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header section with price and follow button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue,
-                          ),
-                          child: Icon(currency.icon,
-                              size: 32, color: Colors.white),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                currency.nombre,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '\$${data.series.last.valor.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    isPositiveChange
-                                        ? Icons.arrow_drop_up
-                                        : Icons.arrow_drop_down,
-                                    color: isPositiveChange
-                                        ? Colors.green
-                                        : Colors.red,
-                                    size: 16,
-                                  ),
-                                  Text(
-                                    '${dailyChange.toStringAsFixed(5)}%',
-                                    style: TextStyle(
-                                      color: isPositiveChange
-                                          ? Colors.green
-                                          : Colors.red,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.blue,
-                      side: const BorderSide(color: Colors.blue),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text('Follow'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              // Chart wrapped in Card
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    height: 200,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Gráfico',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Expanded(
-                          child: LineChart(
-                            LineChartData(
-                              gridData: const FlGridData(show: false),
-                              titlesData: const FlTitlesData(
-                                leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false)),
-                                rightTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false)),
-                                topTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false)),
-                                bottomTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false)),
-                              ),
-                              borderData: FlBorderData(show: false),
-                              lineBarsData: [
-                                LineChartBarData(
-                                  spots:
-                                      data.series.asMap().entries.map((entry) {
-                                    return FlSpot(entry.key.toDouble(),
-                                        entry.value.valor);
-                                  }).toList(),
-                                  isCurved: true,
-                                  color: Colors.green[400],
-                                  barWidth: 2,
-                                  dotData: const FlDotData(show: false),
-                                  belowBarData: BarAreaData(
-                                    show: true,
-                                    color: Colors.green[400]?.withOpacity(0.1),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.green[400]!.withOpacity(0.2),
-                                        Colors.green[400]!.withOpacity(0.0),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              // Stats grid
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                childAspectRatio: 2.5,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildStatItem('Market Cap', '\$87.21B'),
-                  _buildStatItem('Total Vol. 24h', '\$24,524.29K'),
-                  _buildStatItem('Direct Vol. 24h', '\$1,248.20'),
-                  _buildStatItem('Low/High 24h', '\$5,588/10'),
-                ],
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        leadingWidth: 70,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Center(
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: AppTheme.darkButtonColor,
+                  borderRadius: BorderRadius.circular(8)),
+              child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Navigator.maybePop(context),
+                  icon: const Icon(Icons.arrow_back)),
+            ),
           ),
-        );
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('Error loading data: ${error.toString()}'),
+        ),
+        title: Text(currency.nombre, style: const TextStyle(fontSize: 18)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Center(
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    color: AppTheme.darkButtonColor,
+                    borderRadius: BorderRadius.circular(8)),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => _showCurrencyInfoDialog(context),
+                  icon: const Icon(Icons.info_outline),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+      body: historicalData.when(
+        data: (data) {
+          final minValue = ref
+              .read(historicalSeriesProvider(currency.codigo).notifier)
+              .getMinValue();
+          final maxValue = ref
+              .read(historicalSeriesProvider(currency.codigo).notifier)
+              .getMaxValue();
+          final dailyChange = ref
+              .read(historicalSeriesProvider(currency.codigo).notifier)
+              .getDailyChange();
+
+          final isPositiveChange = dailyChange >= 0;
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Graph Widget
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CurrencyGraphWidget(
+                          series: data.series, currency: currency),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Stats grid with improved design
+                  _buildImprovedStatsGrid(),
+
+                  const SizedBox(height: 16),
+
+                  // Historical Statistics Access
+                  _buildHistoricalStatsButton(context),
+                ],
+              ),
+            ),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Text('Error loading data: ${error.toString()}'),
+        ),
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildImprovedStatsGrid() {
     return Card(
-      elevation: 2,
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(12.0),
+        child: GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          childAspectRatio: 2.5,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              value,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            _buildStatItem(
+                MdiIcons.arrowDownBold, 'Valor mínimo', 'colocar valor minimo'),
+            _buildStatItem(
+                MdiIcons.arrowUpBold, 'Valor máximo', 'colocar valor máximo'),
+            _buildStatItem(MdiIcons.minus, 'Mediana', 'colocar valor mediana'),
+            _buildStatItem(
+                MdiIcons.chartLine, 'Promedio', 'colocar valor promedio'),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStatItem(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.blue, size: 20),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHistoricalStatsButton(BuildContext context) {
+    return Center(
+      child: ElevatedButton.icon(
+        onPressed: () {
+          // TODO: Implement navigation to historical stats screen
+        },
+        icon: const Icon(Icons.download_rounded),
+        label: const Text('Descargar reporte'),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: AppTheme.darkTextColor,
+          backgroundColor: AppTheme.darkButtonColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showCurrencyInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('¿Qué es la Unidad de Fomento?'),
+          content: const Text(
+            'La Unidad de Fomento (UF) es una unidad de cuenta reajustable que se usa en Chile. '
+            'Su valor se ajusta diariamente según la inflación para mantener el poder adquisitivo constante.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cerrar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
