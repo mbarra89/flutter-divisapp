@@ -80,17 +80,17 @@ class CurrencyGraphWidget extends ConsumerWidget {
                     children: [
                       Text(
                         DateFormat('MMM').format(point.fecha).toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 9,
-                          color: Colors.grey[800],
+                          color: AppTheme.neutralTextColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
                         DateFormat('dd').format(point.fecha),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 9,
-                          color: Colors.grey[600],
+                          color: AppTheme.neutralTextColor,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -113,7 +113,7 @@ class CurrencyGraphWidget extends ConsumerWidget {
                 CurrencyFormatter.formatRate(value, currency.unidadMedida),
                 style: const TextStyle(
                   fontSize: 10,
-                  color: AppTheme.infoColor,
+                  color: AppTheme.neutralTextColor,
                   fontWeight: FontWeight.w500,
                 ),
               );
@@ -135,16 +135,16 @@ class CurrencyGraphWidget extends ConsumerWidget {
             return FlSpot(entry.key.toDouble(), entry.value.valor);
           }).toList(),
           isCurved: true,
-          color: Colors.deepPurple[600],
+          color: AppTheme.lineChartPrimaryColor,
           barWidth: 4,
           isStrokeCapRound: true,
           dotData: FlDotData(
             show: true,
             getDotPainter: (spot, percent, barData, index) {
               return FlDotCirclePainter(
-                radius: 5,
-                color: Colors.deepPurple[600]!,
-                strokeWidth: 2,
+                radius: 2,
+                color: AppTheme.lineChartPrimaryColor,
+                strokeWidth: 1,
                 strokeColor: Colors.white,
               );
             },
@@ -155,8 +155,8 @@ class CurrencyGraphWidget extends ConsumerWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.deepPurple[300]!.withOpacity(0.4),
-                Colors.deepPurple[100]!.withOpacity(0.1),
+                AppTheme.lineChartPrimaryColor.withOpacity(0.8),
+                AppTheme.lineChartSecondaryColor.withOpacity(0.2),
               ],
             ),
           ),
@@ -184,7 +184,6 @@ class CurrencyGraphWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final historicalData = ref.watch(historicalSeriesProvider(currency.codigo));
     final dailyChange = ref
         .read(historicalSeriesProvider(currency.codigo).notifier)
         .getDailyChange();
@@ -207,11 +206,11 @@ class CurrencyGraphWidget extends ConsumerWidget {
               Text(
                 dailyChange.toStringAsFixed(4),
                 style: TextStyle(
-                  fontSize: 12,
-                  color: dailyChange >= 0
-                      ? AppTheme.upIndicatorColor
-                      : AppTheme.downIndicatorColor,
-                ),
+                    fontSize: 12,
+                    color: dailyChange >= 0
+                        ? AppTheme.upIndicatorColor
+                        : AppTheme.downIndicatorColor,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),

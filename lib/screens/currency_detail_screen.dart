@@ -1,9 +1,12 @@
 import 'package:divisapp/models/currency_view_model.dart';
 import 'package:divisapp/providers/historical_provider.dart';
+import 'package:divisapp/router.dart';
 import 'package:divisapp/theme/app_theme.dart';
+import 'package:divisapp/utils/currency_formatter.dart';
 import 'package:divisapp/widgets/currency_graph_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class CurrencyDetailScreen extends ConsumerWidget {
@@ -14,6 +17,12 @@ class CurrencyDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final historicalData = ref.watch(historicalSeriesProvider(currency.codigo));
+    final minValue = ref
+        .read(historicalSeriesProvider(currency.codigo).notifier)
+        .getMinValue();
+    final maxValue = ref
+        .read(historicalSeriesProvider(currency.codigo).notifier)
+        .getMaxValue();
 
     return Scaffold(
       appBar: AppBar(
@@ -25,16 +34,17 @@ class CurrencyDetailScreen extends ConsumerWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                  color: AppTheme.darkButtonColor,
+                  color: AppTheme.iconBackgroundColor,
                   borderRadius: BorderRadius.circular(8)),
               child: IconButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () => Navigator.maybePop(context),
+                  onPressed: () => context.go(AppRoute.home.path),
                   icon: const Icon(Icons.arrow_back)),
             ),
           ),
         ),
-        title: Text(currency.nombre, style: const TextStyle(fontSize: 18)),
+        title: Text(currency.nombre,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -43,7 +53,7 @@ class CurrencyDetailScreen extends ConsumerWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                    color: AppTheme.darkButtonColor,
+                    color: AppTheme.iconBackgroundColor,
                     borderRadius: BorderRadius.circular(8)),
                 child: IconButton(
                   padding: EdgeInsets.zero,
@@ -57,18 +67,6 @@ class CurrencyDetailScreen extends ConsumerWidget {
       ),
       body: historicalData.when(
         data: (data) {
-          final minValue = ref
-              .read(historicalSeriesProvider(currency.codigo).notifier)
-              .getMinValue();
-          final maxValue = ref
-              .read(historicalSeriesProvider(currency.codigo).notifier)
-              .getMaxValue();
-          final dailyChange = ref
-              .read(historicalSeriesProvider(currency.codigo).notifier)
-              .getDailyChange();
-
-          final isPositiveChange = dailyChange >= 0;
-
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -77,6 +75,7 @@ class CurrencyDetailScreen extends ConsumerWidget {
                 children: [
                   // Graph Widget
                   Card(
+                    color: AppTheme.darkSurfaceColor,
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -91,7 +90,7 @@ class CurrencyDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
 
                   // Stats grid with improved design
-                  _buildImprovedStatsGrid(),
+                  _buildImprovedStatsGrid(minValue, maxValue),
 
                   const SizedBox(height: 16),
 
@@ -110,8 +109,9 @@ class CurrencyDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildImprovedStatsGrid() {
+  Widget _buildImprovedStatsGrid(double minValue, double maxValue) {
     return Card(
+      color: AppTheme.darkSurfaceColor,
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -126,10 +126,10 @@ class CurrencyDetailScreen extends ConsumerWidget {
           crossAxisSpacing: 8,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildStatItem(
-                MdiIcons.arrowDownBold, 'Valor mínimo', 'colocar valor minimo'),
-            _buildStatItem(
-                MdiIcons.arrowUpBold, 'Valor máximo', 'colocar valor máximo'),
+            _buildStatItem(MdiIcons.arrowDownBold, 'Valor mínimo',
+                CurrencyFormatter.formatRate(minValue, currency.unidadMedida)),
+            _buildStatItem(MdiIcons.arrowUpBold, 'Valor máximo',
+                CurrencyFormatter.formatRate(maxValue, currency.unidadMedida)),
             _buildStatItem(MdiIcons.minus, 'Mediana', 'colocar valor mediana'),
             _buildStatItem(
                 MdiIcons.chartLine, 'Promedio', 'colocar valor promedio'),
@@ -184,8 +184,8 @@ class CurrencyDetailScreen extends ConsumerWidget {
         icon: const Icon(Icons.download_rounded),
         label: const Text('Descargar reporte'),
         style: ElevatedButton.styleFrom(
-          foregroundColor: AppTheme.darkTextColor,
-          backgroundColor: AppTheme.darkButtonColor,
+          foregroundColor: AppTheme.accentButtonTextColor,
+          backgroundColor: AppTheme.accentGoldColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

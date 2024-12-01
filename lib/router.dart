@@ -39,7 +39,7 @@ List<RouteBase> _buildAppRoutes() {
     ),
     _buildRoute(
       route: AppRoute.convert,
-      builder: (context, state) => const ConvertScreen(),
+      builder: (context, state) => const CurrencyConverterScreen(),
     ),
     _buildRoute(
       route: AppRoute.profile,

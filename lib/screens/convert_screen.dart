@@ -1,166 +1,274 @@
+import 'package:divisapp/providers/currency_conversion_provider.dart';
+import 'package:divisapp/router.dart';
+import 'package:divisapp/theme/app_theme.dart';
+import 'package:divisapp/utils/currency_formatter.dart';
+import 'package:divisapp/widgets/currency_header.dart';
+import 'package:divisapp/widgets/currency_info_dialog.dart';
+import 'package:divisapp/widgets/currency_result_display.dart';
+import 'package:divisapp/widgets/currency_selection_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class ConvertScreen extends StatefulWidget {
-  const ConvertScreen({super.key});
+class CurrencyConverterScreen extends ConsumerStatefulWidget {
+  const CurrencyConverterScreen({super.key});
 
   @override
-  _ConvertScreenState createState() => _ConvertScreenState();
+  // ignore: library_private_types_in_public_api
+  _CurrencyConverterScreenState createState() =>
+      _CurrencyConverterScreenState();
 }
 
-class _ConvertScreenState extends State<ConvertScreen> {
+class _CurrencyConverterScreenState
+    extends ConsumerState<CurrencyConverterScreen> {
+  // Currency conversion state
+  String _fromCurrency = 'dolar';
+  String _conversionResult = '0.00';
   final TextEditingController _amountController = TextEditingController();
-  double _convertedAmount = 0.0;
-  String _selectedCurrency = 'UF';
 
-  // Aquí podrías reemplazar con tasas de cambio reales o llamadas a una API
-  final Map<String, double> _exchangeRates = {
-    'UF': 37000.0, // Valor referencial de UF
-    'USD': 0.0012, // Dólar
-    'EUR': 0.0011, // Euro
-    'BTC': 0.000000026 // Bitcoin
+  // Map of currency codes to full names
+  static const Map<String, String> _currencyNames = {
+    'dolar': 'Dólar Americano',
+    'uf': 'Unidad de Fomento',
+    'euro': 'Euro',
   };
 
-  void _convertCurrency() {
-    if (_amountController.text.isEmpty) return;
-
-    final inputValue = double.tryParse(_amountController.text) ?? 0.0;
+  void _updateFromCurrency(String currency) {
     setState(() {
-      switch (_selectedCurrency) {
-        case 'UF':
-          _convertedAmount = inputValue;
-          break;
-        case 'USD':
-          _convertedAmount = inputValue * _exchangeRates['USD']!;
-          break;
-        case 'EUR':
-          _convertedAmount = inputValue * _exchangeRates['EUR']!;
-          break;
-        case 'BTC':
-          _convertedAmount = inputValue * _exchangeRates['BTC']!;
-          break;
-      }
+      _fromCurrency = currency;
     });
+  }
+
+  Future<void> _performConversion() async {
+    try {
+      // Input validation
+      if (_amountController.text.isEmpty) {
+        _showErrorSnackBar('Por favor, ingrese un monto');
+        return;
+      }
+
+      final amount = double.tryParse(_amountController.text);
+      if (amount == null) {
+        _showErrorSnackBar('Monto inválido');
+        return;
+      }
+
+      // Perform conversion
+      final result = await ref
+          .read(currencyConversionProvider(_fromCurrency, amount).future);
+
+      setState(() {
+        _conversionResult = CurrencyFormatter.formatRate(result, 'Pesos');
+      });
+    } catch (e) {
+      _showErrorSnackBar('Error en la conversión: ${e.toString()}');
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Convertidor de Moneda',
-            style: TextStyle(color: Colors.black87)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black87),
+      appBar: _buildAppBar(context),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _buildCurrencyConverterCard(context),
+        ),
       ),
-      body: Padding(
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      leadingWidth: 70,
+      leading: _buildLeadingBackButton(context),
+      title: const Text(
+        "Conversor",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      actions: [_buildInfoButton(context)],
+    );
+  }
+
+  Widget _buildLeadingBackButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Center(
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppTheme.iconBackgroundColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: () => context.go(AppRoute.home.path),
+            icon: const Icon(Icons.arrow_back),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: Center(
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppTheme.iconBackgroundColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: () => CurrencyInfoDialog.show(context),
+            icon: const Icon(Icons.info_outline),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCurrencyConverterCard(BuildContext context) {
+    return Card(
+      color: AppTheme.darkSurfaceColor,
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                labelText: 'Ingrese monto',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                suffixText: 'CLP',
-              ),
-              onChanged: (_) => _convertCurrency(),
+            CurrencyHeader(
+              currencyCode: _fromCurrency,
+              currencyName: _currencyNames[_fromCurrency]!,
+              onCurrencyTap: () => _showCurrencySelectionDialog(context),
             ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedCurrency,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    items: ['UF', 'USD', 'EUR', 'BTC']
-                        .map((currency) => DropdownMenuItem(
-                              value: currency,
-                              child: Text(currency),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCurrency = value!;
-                        _convertCurrency();
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: _convertCurrency,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[700],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text('Convertir',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 12),
+            FutureBuilder<Widget>(
+              future: _buildExchangeRateText(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return snapshot.data ?? const SizedBox.shrink();
+                }
+              },
             ),
-            SizedBox(height: 24),
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Resultado:',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${_amountController.text.isNotEmpty ? _amountController.text : '0'} CLP',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54,
-                          ),
-                        ),
-                        Text(
-                          '${_convertedAmount.toStringAsFixed(2)} $_selectedCurrency',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            const SizedBox(height: 12),
+            _buildAmountTextField(),
+            const SizedBox(height: 12),
+            const Divider(color: Colors.grey, thickness: 2.0),
+            const SizedBox(height: 12),
+            const CurrencyHeader(
+              currencyCode: 'CLP',
+              currencyName: 'Peso Chileno',
+              isFromCurrency: false,
             ),
+            const SizedBox(height: 12),
+            const SizedBox(height: 12),
+            ConversionResultDisplay(conversionResult: _conversionResult),
+            const SizedBox(height: 12),
+            _buildConvertButton(),
           ],
         ),
       ),
+    );
+  }
+
+  Future<Widget> _buildExchangeRateText() async {
+    final result =
+        await ref.read(currencyConversionProvider(_fromCurrency, 1).future);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        RichText(
+          text: TextSpan(
+            // ignore: use_build_context_synchronously
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppTheme.neutralTextColor,
+                ),
+            children: [
+              TextSpan(
+                text: '1 $_fromCurrency = $result CLP',
+                style: const TextStyle(
+                  color: AppTheme.neutralTextColor,
+                  fontSize: 14.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAmountTextField() {
+    return TextField(
+      controller: _amountController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: 'Monto',
+        hintText: 'Ingrese el monto a convertir',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        prefixIcon: const Icon(
+          Icons.monetization_on,
+          color: AppTheme.accentGoldColor,
+        ),
+      ),
+      style: const TextStyle(
+        color: AppTheme.darkTextColor,
+        fontSize: 16.0,
+      ),
+    );
+  }
+
+  Widget _buildConvertButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _performConversion,
+        style: ElevatedButton.styleFrom(
+          foregroundColor: AppTheme.accentButtonTextColor,
+          backgroundColor: AppTheme.accentGoldColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: const Text(
+          'Convertir',
+          style: TextStyle(fontSize: 16),
+        ),
+      ),
+    );
+  }
+
+  void _showCurrencySelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CurrencySelectionDialog(
+          onCurrencySelected: (currency) {
+            _updateFromCurrency(currency);
+          },
+        );
+      },
     );
   }
 }

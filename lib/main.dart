@@ -22,7 +22,7 @@ class DivisApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'DivisApp',
-      theme: AppTheme.darkTheme(),
+      theme: ThemeData(fontFamily: 'Roboto', brightness: Brightness.dark),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
       routerConfig: router,
@@ -47,35 +47,6 @@ class DivisApp extends ConsumerWidget {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness:
           themeMode == ThemeMode.dark ? Brightness.light : Brightness.dark,
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context, ThemeMode themeMode) {
-    return PreferredSize(
-      preferredSize:
-          Size.fromHeight(kToolbarHeight + MediaQuery.of(context).padding.top),
-      child: AppBar(
-        backgroundColor: themeMode == ThemeMode.dark
-            ? AppTheme.darkSurfaceColor
-            : AppTheme.lightSurfaceColor,
-        elevation: 0,
-        flexibleSpace: _buildFlexibleSpace(),
-      ),
-    );
-  }
-
-  Widget _buildFlexibleSpace() {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/banner.webp',
-            fit: BoxFit.cover,
-            color: Colors.blue.withOpacity(0.5),
-            colorBlendMode: BlendMode.darken,
-          ),
-        ),
-      ],
     );
   }
 }

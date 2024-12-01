@@ -73,7 +73,7 @@ class _CurrencyItemContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildCurrencyInfo(),
+              _buildCurrencyInfo(context),
               const SizedBox(height: 4),
             ],
           ),
@@ -90,11 +90,29 @@ class _CurrencyItemContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrencyInfo() {
+  Widget _buildCurrencyInfo(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(currency.icon, size: 24, color: textColor),
+        Padding(
+            padding: const EdgeInsets.all(8),
+            child: Center(
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.iconBackgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    context.go('/currency/${currency.codigo}', extra: currency);
+                  },
+                  icon: Icon(currency.icon),
+                ),
+              ),
+            )),
         const SizedBox(width: 12),
         Flexible(
           child: Column(
@@ -169,8 +187,8 @@ class _CurrencyItemContent extends StatelessWidget {
 
   Color _getPercentageColor(String percentage) {
     final value = double.tryParse(percentage.replaceAll('%', '')) ?? 0;
-    if (value > 0) return const Color(0xFF00B07C);
-    if (value < 0) return const Color(0xFFE63946);
+    if (value > 0) return AppTheme.upIndicatorColor;
+    if (value < 0) return AppTheme.downIndicatorColor;
     return textColor.withOpacity(0.6);
   }
 

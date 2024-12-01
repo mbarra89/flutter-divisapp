@@ -61,15 +61,22 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
   Widget _buildSearchField() {
     return TextField(
       controller: _searchController,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: 'Buscar por nombre de moneda',
-        prefixIcon: Icon(Icons.search),
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(
+        prefixIcon: const Icon(Icons.search, color: Colors.white),
+        hintStyle: const TextStyle(color: Colors.white70),
+        filled: true,
+        fillColor: const Color(0xFF141416),
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 12,
         ),
       ),
+      style: const TextStyle(color: Colors.white),
       onChanged: (value) {
         setState(() {
           _searchQuery = value;
@@ -81,8 +88,48 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
   // Método para construir el AppBar completo
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppTheme.darkButtonColor,
-      title: _buildSearchField(),
+      backgroundColor: AppTheme.appBarBackgroundColor,
+      title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/profile.jpeg'),
+                  ),
+                  const SizedBox(width: 8),
+                  RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: AppTheme.neutralTextColor,
+                          ),
+                      children: const [
+                        TextSpan(
+                          text: 'Welcome back\n',
+                        ),
+                        TextSpan(
+                          text: 'Miguel',
+                          style: TextStyle(
+                            color: AppTheme
+                                .darkTextColor, // Color personalizado para nombre
+                            fontWeight: FontWeight
+                                .bold, // Fuente personalizada (puedes cambiar)
+                            fontSize:
+                                18.0, // Tamaño de fuente específico para nombre
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 8),
+              _buildSearchField(),
+            ],
+          )),
+      toolbarHeight: 150,
     );
   }
 
