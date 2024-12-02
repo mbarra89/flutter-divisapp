@@ -35,17 +35,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      // Attempt Firebase Authentication
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // Use Firebase Authentication with Email/Password
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // Navigate to home screen or next page after successful login
-      // Replace with your app's navigation logic
-      // Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //   builder: (context) => HomeScreen(),
-      // ));
+      // Navigate to CurrencyScreen after successful login
+      if (mounted) {
+        context.go(AppRoute.home.path);
+      }
     } on FirebaseAuthException catch (e) {
       // Handle specific Firebase authentication errors
       setState(() {
@@ -58,6 +58,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             break;
           case 'invalid-email':
             _errorMessage = 'Correo electrónico inválido.';
+            break;
+          case 'invalid-credential':
+            _errorMessage = 'Credenciales inválidas. Verifica tus datos.';
             break;
           default:
             _errorMessage = 'Error de inicio de sesión. Intenta de nuevo.';
@@ -85,7 +88,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Logo or Title (optional)
                 const Text(
                   'Iniciar Sesión',
                   style: TextStyle(
@@ -178,13 +180,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     TextButton(
                       onPressed: () {
                         // TODO: Implement forgot password navigation
+                        // context.push(AppRoute.forgotPassword.path);
                       },
                       child: const Text('¿Olvidaste tu contraseña?'),
                     ),
                     TextButton(
                       onPressed: () {
-                        context.push(AppRoute.registro
-                            .path); // Añade esta ruta a tu enum de rutas
+                        context.push(AppRoute.registro.path);
                       },
                       child: const Text('Registrarse'),
                     ),
