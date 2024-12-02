@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "414769625903",
+    "project_id": "divisapp-c8852",
+    "storage_bucket": "divisapp-c8852.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414769625903:android:7b96fda7e4150af16f3fda",
+        "android_client_info": {
+          "package_name": "com.example.divisapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASpmYfiF_wCtuhJhzRnnFLsKY9ARurlSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

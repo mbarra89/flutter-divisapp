@@ -1,13 +1,27 @@
+import 'package:divisapp/firebase_options.dart';
 import 'package:divisapp/providers/theme_provider.dart';
 import 'package:divisapp/router.dart';
 import 'package:divisapp/theme/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 
 const double kAppBarTotalHeight = kToolbarHeight;
 
-void main() {
+final Logger _logger = Logger();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Añada esta línea
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    _logger.i('Firebase initialized');
+  } catch (e, s) {
+    _logger.e('Error initializing Firebase', error: e, stackTrace: s);
+  }
   runApp(const ProviderScope(child: DivisApp()));
 }
 
