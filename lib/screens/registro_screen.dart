@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class RegistroScreen extends ConsumerStatefulWidget {
-  const RegistroScreen({Key? key}) : super(key: key);
+  const RegistroScreen({super.key});
 
   @override
   ConsumerState<RegistroScreen> createState() => _RegistroScreenState();

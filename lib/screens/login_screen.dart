@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -35,14 +35,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      // Use Firebase Authentication with Email/Password
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // Authenticate with Firebase without storing the credentials
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // Navigate to CurrencyScreen after successful login
+      // Navigate to home screen only after successful authentication
       if (mounted) {
         context.go(AppRoute.home.path);
       }

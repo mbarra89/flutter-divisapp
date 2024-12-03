@@ -1,5 +1,6 @@
 import 'package:divisapp/models/currency_view_model.dart';
 import 'package:divisapp/providers/currency_provider.dart';
+import 'package:divisapp/providers/user_provider.dart';
 import 'package:divisapp/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,11 +12,18 @@ class CurrencyScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currenciesAsync = ref.watch(currencyListProvider);
+    final userAsync = ref.watch(currentUserProvider);
+
     return Scaffold(
       body: currenciesAsync.when(
-        data: (currencies) => _CurrencyListView(
-          currencies: currencies,
-          onRefresh: ref.read(currencyListProvider.notifier).refresh,
+        data: (currencies) => userAsync.when(
+          data: (user) => _CurrencyListView(
+            currencies: currencies,
+            onRefresh: ref.read(currencyListProvider.notifier).refresh,
+            userName: user?.nombreCompleto ?? 'Usuario',
+          ),
+          error: (error, stackTrace) => _ErrorView(error: error),
+          loading: () => const _LoadingView(),
         ),
         error: (error, stackTrace) => _ErrorView(error: error),
         loading: () => const _LoadingView(),
@@ -27,10 +35,12 @@ class CurrencyScreen extends ConsumerWidget {
 class _CurrencyListView extends StatefulWidget {
   final List<CurrencyViewModel> currencies;
   final Future<void> Function() onRefresh;
+  final String userName;
 
   const _CurrencyListView({
     required this.currencies,
     required this.onRefresh,
+    required this.userName,
   });
 
   @override
@@ -57,7 +67,6 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
         .toList();
   }
 
-  // Método para construir el campo de búsqueda
   Widget _buildSearchField() {
     return TextField(
       controller: _searchController,
@@ -85,7 +94,6 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
     );
   }
 
-  // Método para construir el AppBar completo
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: AppTheme.appBarBackgroundColor,
@@ -105,19 +113,16 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: AppTheme.neutralTextColor,
                           ),
-                      children: const [
-                        TextSpan(
-                          text: 'Welcome back\n',
+                      children: [
+                        const TextSpan(
+                          text: 'Bienvenido\n',
                         ),
                         TextSpan(
-                          text: 'Miguel',
-                          style: TextStyle(
-                            color: AppTheme
-                                .darkTextColor, // Color personalizado para nombre
-                            fontWeight: FontWeight
-                                .bold, // Fuente personalizada (puedes cambiar)
-                            fontSize:
-                                18.0, // Tamaño de fuente específico para nombre
+                          text: widget.userName,
+                          style: const TextStyle(
+                            color: AppTheme.darkTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
                           ),
                         ),
                       ],
@@ -136,7 +141,6 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Utilizamos el nuevo método para construir el AppBar
       appBar: _buildAppBar(),
       body: RefreshIndicator(
         onRefresh: widget.onRefresh,
@@ -146,7 +150,6 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
   }
 }
 
-/// Vista de error
 class _ErrorView extends StatelessWidget {
   final Object error;
 
@@ -173,7 +176,6 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-/// Vista de carga
 class _LoadingView extends StatelessWidget {
   const _LoadingView();
 
