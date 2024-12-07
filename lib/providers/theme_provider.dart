@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 part 'theme_provider.g.dart';
 
 /// Estados disponibles para el tema de la aplicación
@@ -27,13 +29,30 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
   ///
   /// Inicializa el tema por defecto siguiendo la configuración del sistema
   @override
-  ThemeMode build() => ThemeMode.system;
+  ThemeMode build() {
+    _loadThemePreference();
+    return ThemeMode.system;
+  }
+
+  /// Carga la preferencia de tema guardada
+  Future<void> _loadThemePreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedThemeIndex = prefs.getInt(themePreferenceKey);
+
+      if (savedThemeIndex != null) {
+        state = ThemeMode.values[savedThemeIndex];
+      }
+    } catch (e) {
+      print('Error loading theme preference: $e');
+    }
+  }
 
   /// Alterna entre el tema claro y oscuro
   ///
   /// Si el tema actual es sistema o claro, cambia a oscuro
   /// Si el tema actual es oscuro, cambia a claro
-  void toggleTheme() {
+  Future<void> toggleTheme() async {
     switch (state) {
       case ThemeMode.system:
       case ThemeMode.light:
@@ -43,21 +62,31 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
         state = ThemeMode.light;
         break;
     }
-    _saveThemePreference();
+    await _saveThemePreference();
+  }
+
+  /// Guarda la preferencia del tema en el almacenamiento local
+  Future<void> _saveThemePreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(themePreferenceKey, state.index);
+    } catch (e) {
+      print('Error saving theme preference: $e');
+    }
   }
 
   /// Establece un tema específico
   ///
   /// [newTheme] El nuevo tema que se desea establecer
-  void setTheme(ThemeMode newTheme) {
+  Future<void> setTheme(ThemeMode newTheme) async {
     state = newTheme;
-    _saveThemePreference();
+    await _saveThemePreference();
   }
 
   /// Establece el tema basado en el estado proporcionado
   ///
   /// [themeState] El estado del tema que se desea establecer
-  void setThemeByState(ThemeState themeState) {
+  Future<void> setThemeByState(ThemeState themeState) async {
     switch (themeState) {
       case ThemeState.light:
         state = ThemeMode.light;
@@ -69,7 +98,7 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
         state = ThemeMode.system;
         break;
     }
-    _saveThemePreference();
+    await _saveThemePreference();
   }
 
   /// Obtiene el estado actual del tema
@@ -84,16 +113,6 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
       case ThemeMode.system:
         return ThemeState.system;
     }
-  }
-
-  /// Guarda la preferencia del tema en el almacenamiento local
-  ///
-  /// Este método debe implementarse usando SharedPreferences o similar
-  void _saveThemePreference() {
-    // TODO: Implementar guardado de preferencias
-    // Ejemplo:
-    // final prefs = await SharedPreferences.getInstance();
-    // await prefs.setString(themePreferenceKey, state.toString());
   }
 
   /// Verifica si el tema actual es oscuro

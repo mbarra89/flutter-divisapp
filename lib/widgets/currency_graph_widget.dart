@@ -26,6 +26,11 @@ class CurrencyGraphWidget extends ConsumerWidget {
     final minValue = values.reduce((curr, next) => curr < next ? curr : next);
     final maxValue = values.reduce((curr, next) => curr > next ? curr : next);
 
+    // If all values are the same, add a small padding to create a visible interval
+    if (minValue == maxValue) {
+      return [minValue - 0.5, maxValue + 0.5];
+    }
+
     final padding = (maxValue - minValue) * 0.1;
     return [minValue - padding, maxValue + padding];
   }
@@ -33,6 +38,9 @@ class CurrencyGraphWidget extends ConsumerWidget {
   LineChartData _buildLineChartData(BuildContext context) {
     final minMax = _calculateMinMaxValues();
     final intervalY = ((minMax[1] - minMax[0]) / 4).ceilToDouble();
+
+    // Ensure intervalY is not zero
+    final safeIntervalY = intervalY == 0 ? 0.1 : intervalY;
 
     // Reduce the number of X-axis labels to minimize truncation
     final intervalX =
@@ -45,7 +53,7 @@ class CurrencyGraphWidget extends ConsumerWidget {
         drawVerticalLine: true,
         drawHorizontalLine: true,
         verticalInterval: intervalX.toDouble(),
-        horizontalInterval: intervalY,
+        horizontalInterval: safeIntervalY,
         getDrawingVerticalLine: (value) => FlLine(
           color: Colors.grey.withOpacity(0.3),
           strokeWidth: 1,
@@ -106,9 +114,17 @@ class CurrencyGraphWidget extends ConsumerWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 50,
-            interval: intervalY,
+            interval: safeIntervalY,
             getTitlesWidget: (value, meta) {
-              if (value == minMax[0]) return const SizedBox.shrink();
+              // Verificar si esta etiqueta está en el borde de la cuadrícula o es mínimamente visible
+              final isAtGridBoundary = value == minMax[0] || value == minMax[1];
+              final isCompletelyVisible = value > meta.min && value < meta.max;
+
+              // Mostrar la etiqueta solo si está en los bordes de la cuadrícula o completamente dentro de ella
+              if (!isAtGridBoundary && !isCompletelyVisible) {
+                return const SizedBox.shrink();
+              }
+
               return Text(
                 CurrencyFormatter.formatRate(value, currency.unidadMedida),
                 style: const TextStyle(
@@ -170,7 +186,7 @@ class CurrencyGraphWidget extends ConsumerWidget {
               final point = series[touchedSpot.x.toInt()];
               return LineTooltipItem(
                 '${DateFormat('dd/MM/yyyy').format(point.fecha)}\n'
-                'Valor: ${point.valor.toStringAsFixed(2)} UF',
+                'Valor: ${CurrencyFormatter.formatRate(point.valor, currency.unidadMedida)}',
                 const TextStyle(
                   color: AppTheme.darkTextColor,
                 ),
@@ -203,15 +219,15 @@ class CurrencyGraphWidget extends ConsumerWidget {
                     fontWeight: FontWeight.bold,
                     color: AppTheme.darkTextColor),
               ),
-              Text(
-                dailyChange.toStringAsFixed(4),
-                style: TextStyle(
-                    fontSize: 12,
-                    color: dailyChange >= 0
-                        ? AppTheme.upIndicatorColor
-                        : AppTheme.downIndicatorColor,
-                    fontWeight: FontWeight.bold),
-              ),
+              // Text(
+              //   dailyChange.toStringAsFixed(4),
+              //   style: TextStyle(
+              //       fontSize: 12,
+              //       color: dailyChange >= 0
+              //           ? AppTheme.upIndicatorColor
+              //           : AppTheme.downIndicatorColor,
+              //       fontWeight: FontWeight.bold),
+              // ),
             ],
           ),
         ),

@@ -1,76 +1,151 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Colores principales
+  // Colores para TextFormField en modo oscuro
+  static const Color darkTextColor =
+      Color(0xFFE0E0E0); // Blanco cálido para texto
+  static const Color darkBorderColor =
+      Color(0xFF4C565E); // Gris oscuro para borde
+  static const Color darkFocusColor =
+      Color(0xFF4CAF50); // Verde brillante para foco
+  static const Color darkIconColor =
+      Color(0xFF757575); // Gris suave para iconos
+  static const Color darkErrorColor =
+      Color(0xFFD32F2F); // Rojo brillante para error
+  static const Color darkLabelColor =
+      Color(0xFFB0BEC5); // Gris claro para label
+
+  // Colores para TextFormField en modo claro
+  static const Color lightTextColor =
+      Color(0xFF212121); // Gris oscuro para texto
+  static const Color lightBorderColor =
+      Color(0xFFB0BEC5); // Gris suave para borde
+  static const Color lightFocusColor =
+      Color(0xFF82CBB7); // Verde más brillante para foco
+  static const Color lightIconColor =
+      Color(0xFF5A7D8A); // Gris medio para iconos
+  static const Color lightErrorColor =
+      Color(0xFFD32F2F); // Rojo brillante para error
+  static const Color lightLabelColor =
+      Color(0xFF5A7D8A); // Gris medio para label
+
+  // Método para crear InputDecoration
+  static InputDecoration inputDecoration(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+
+    return InputDecoration(
+      filled: true,
+      fillColor: isDark
+          ? const Color(0xFF222526)
+          : Colors.white, // Fondo del TextFormField
+      hintText: "Ingrese su dato", // Placeholder
+      hintStyle: TextStyle(
+        color: isDark ? darkTextColor : lightTextColor, // Color del placeholder
+      ),
+      labelText: "Campo",
+      labelStyle: TextStyle(
+        color:
+            isDark ? darkLabelColor : lightLabelColor, // Color de la etiqueta
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: isDark ? darkBorderColor : lightBorderColor, // Borde normal
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: isDark ? darkFocusColor : lightFocusColor, // Borde con foco
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: darkErrorColor, // Borde en caso de error
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: darkErrorColor, // Borde en caso de error con foco
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      prefixIcon: Icon(
+        Icons.input, // Icono del campo
+        color: isDark ? darkIconColor : lightIconColor, // Color del icono
+      ),
+    );
+  }
+
+  // Colores de texto para el título
+  static const Color darkTitleTextColor =
+      Color(0xFFE0E0E0); // Blanco cálido para título en modo oscuro
+  static const Color lightTitleTextColor =
+      Color(0xFF212121); // Gris oscuro para título en modo claro
+
+// Colores principales
   static const Color primaryColor =
-      Color(0xFF1F4D3A); // Verde oscuro apagado y profesional
+      Color(0xFF4C9A7D); // Verde más brillante y visible en fondo oscuro
   static const Color secondaryColor =
-      Color(0xFF3A7A5A); // Verde más suave para énfasis
+      Color(0xFF5FB88C); // Verde más suave pero más visible
   static const Color accentColor =
-      Color(0xFF5C9D7D); // Verde tenue para elementos destacados
+      Color(0xFF82CBB7); // Verde más claro para detalles y énfasis
 
 // Escala de grises y fondos neutrales
   static const Color backgroundColor =
-      Color(0xFFECEFF1); // Gris claro más suave con menor contraste
+      Color(0xFF121212); // Fondo más oscuro para mejor contraste
   static const Color lightBackgroundColor =
-      Color(0xFFFAFAFA); // Blanco sutil, no tan puro
+      Color(0xFFFFFFFF); // Fondo blanco para modo claro
   static const Color darkBackgroundColor =
-      Color(0xFF181A1C); // Negro más apagado para evitar contraste extremo
+      Color(0xFF181A1C); // Fondo de tono neutro muy oscuro
 
 // Superficies y texto
   static const Color lightSurfaceColor =
-      Color(0xFFDDE2E6); // Gris claro más suave para fondos elevados
-  static const Color darkSurfaceColor =
-      Color(0xFF222526); // Gris oscuro suave, menos dramático
-  static const Color textColor =
-      Color(0xFF2B3137); // Gris oscuro neutro para texto principal
-  static const Color lightTextColor =
-      Color(0xFF4C565E); // Gris medio más apagado para texto secundario
-  static const Color darkTextColor =
-      Color(0xFFEBEBEB); // Blanco cálido, no tan puro
+      Color(0xFFF5F5F5); // Gris claro para fondos elevados en modo claro
+  static const Color darkSurfaceColor = Color(
+      0xFF222526); // Gris suave con poco contraste para superficies oscuras
+  static const Color textColor = Color(
+      0xFF212121); // Gris oscuro neutro para texto principal en modo claro
 
 // Colores de estado
   static const Color errorColor =
-      Color(0xFFA3333D); // Rojo sobrio y más profesional
+      Color(0xFFD32F2F); // Rojo vibrante, más visible y profesional
   static const Color successColor =
-      Color(0xFF219150); // Verde más discreto para éxito
+      Color(0xFF388E3C); // Verde más brillante para indicar éxito
   static const Color warningColor =
-      Color(0xFFD48B18); // Amarillo más oscuro y menos llamativo
+      Color(0xFFFBC02D); // Amarillo más brillante para advertencias
   static const Color infoColor =
-      Color(0xFF5A6168); // Gris más oscuro para información
+      Color(0xFF0288D1); // Azul más brillante para información
 
 // Indicadores económicos
-  static const Color upIndicatorColor = Color(
-      0xFF219150); // Verde medio, más suave y elegante para indicar alzas.
+  static const Color upIndicatorColor =
+      Color(0xFF4CAF50); // Verde medio brillante para indicar alzas
 
-  static const Color downIndicatorColor = Color(
-      0xFFA3333D); // Rojo oscuro y sobrio para indicar bajas, más sofisticado y menos agresivo.
+  static const Color downIndicatorColor =
+      Color(0xFFD32F2F); // Rojo brillante para indicar bajas
 
 // Botones
-// Botones en modo claro
-  static const Color lightButtonColor =
-      Color(0xFF0A3D62); // Azul petróleo profundo y vibrante para destacar
-
 // Botones en modo oscuro
   static const Color darkButtonColor =
-      Color(0xFF145374); // Azul petróleo más claro y brillante para contraste
+      Color(0xFF4CAF50); // Verde más brillante para destacar en fondo oscuro
 
-// Texto en botones en ambos modos (claro/oscuro)
+// Botones en modo claro
+  static const Color lightButtonColor =
+      Color(0xFF82CBB7); // Verde más claro para destacar en fondo claro
+
+// Texto en botones
   static const Color buttonTextColor =
       Color(0xFFFFFFFF); // Blanco puro para máximo contraste
 
-// Alternativa de contraste para texto en botones oscuros (solo si necesitas variar)
-  static const Color buttonTextAltColor =
-      Color(0xFFDAE8F1); // Azul claro pastel
-
 // Navegación
-  static const Color lightNavBarColor =
-      Color(0xFFCBD4DB); // Gris claro más apagado
   static const Color darkNavBarColor =
-      Color(0xFF202224); // Gris oscuro más sobrio
+      Color(0xFF121212); // Fondo oscuro para la barra de navegación
+  static const Color lightNavBarColor = Color(
+      0xFFFAFAFA); // Fondo claro para la barra de navegación en modo claro
 
 // Tarjetas
-  // Fondo de tarjeta en modo claro
+// Fondo de tarjeta en modo claro
   static const Color lightCardBackground =
       Color(0xFFEAF0F2); // Azul petróleo muy claro, tenue
 
@@ -162,6 +237,8 @@ class AppTheme {
   static const Color appBarBackgroundColor = Color(
       0xFF212126); // Fondo oscuro para la barra de navegación, manteniendo la coherencia con el resto de la interfaz.
 
+  static const Color errorMessageColor = Color(0xFFFF6F61); // Un rojo suave
+
   static ThemeData lightTheme() {
     return _buildTheme(Brightness.light);
   }
@@ -211,6 +288,10 @@ class AppTheme {
             fontWeight: FontWeight.bold,
           )),
         ),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor:
+            brightness == Brightness.light ? lightNavBarColor : darkNavBarColor,
       ),
     );
   }

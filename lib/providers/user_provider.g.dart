@@ -6,7 +6,7 @@ part of 'user_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentUserHash() => r'd411b0251c7933a5c392d20b94e1bf3d0bf74ef4';
+String _$currentUserHash() => r'362f3f742bcfbead4092e9ab1ef634af76f24c1e';
 
 /// See also [currentUser].
 @ProviderFor(currentUser)
@@ -22,7 +22,7 @@ final currentUserProvider = AutoDisposeFutureProvider<UserModel?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentUserRef = AutoDisposeFutureProviderRef<UserModel?>;
-String _$isAuthenticatedHash() => r'0f613af867e29222bd6e5221ba2d9d9fac6a4180';
+String _$isAuthenticatedHash() => r'e27c544794e027d8ce5d7682f55cd59bec2194be';
 
 /// See also [isAuthenticated].
 @ProviderFor(isAuthenticated)
@@ -39,7 +39,7 @@ final isAuthenticatedProvider = AutoDisposeProvider<bool>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef IsAuthenticatedRef = AutoDisposeProviderRef<bool>;
-String _$logoutHash() => r'7a30627b8d7ff117b1b4ea12adfe432157a5229a';
+String _$logoutHash() => r'963e513a3962b007df3ed826e2d2a7991cf0f23a';
 
 /// See also [logout].
 @ProviderFor(logout)

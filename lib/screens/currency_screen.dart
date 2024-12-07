@@ -104,8 +104,12 @@ class _CurrencyListViewState extends State<_CurrencyListView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/profile.jpeg'),
+                  CircleAvatar(
+                    backgroundColor: AppTheme.primaryColor,
+                    child: Text(
+                      widget.userName[0],
+                      style: const TextStyle(color: AppTheme.darkTextColor),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   RichText(

@@ -31,6 +31,8 @@ class _CurrencyConverterScreenState
     'dolar': 'Dólar Americano',
     'uf': 'Unidad de Fomento',
     'euro': 'Euro',
+    'libra_cobre': 'Libra de Cobre',
+    'bitcoin': 'Bitcoin',
   };
 
   void _updateFromCurrency(String currency) {

@@ -25,6 +25,8 @@ class CurrencySelectionDialog extends StatelessWidget {
           _buildCurrencyOption(context, 'dolar', 'USD (Dólar Americano)'),
           _buildCurrencyOption(context, 'uf', 'UF'),
           _buildCurrencyOption(context, 'euro', 'Euro'),
+          _buildCurrencyOption(context, 'libra_cobre', 'Libra de Cobre'),
+          _buildCurrencyOption(context, 'bitcoin', 'Bitcoin')
         ],
       ),
       actions: [

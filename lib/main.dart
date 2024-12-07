@@ -1,4 +1,5 @@
 import 'package:divisapp/firebase_options.dart';
+import 'package:divisapp/providers/economic_indicators_provider.dart';
 import 'package:divisapp/providers/theme_provider.dart';
 import 'package:divisapp/router.dart';
 import 'package:divisapp/theme/app_theme.dart';
@@ -22,6 +23,21 @@ void main() async {
   } catch (e, s) {
     _logger.e('Error initializing Firebase', error: e, stackTrace: s);
   }
+
+  // Create a ProviderContainer to access providers before running the app
+  final container = ProviderContainer();
+
+  try {
+    // Initialize economic indicators
+    await container.read(initializeEconomicIndicatorsProvider.future);
+    _logger.i('Economic indicators initialized');
+  } catch (e) {
+    _logger.e('Error initializing economic indicators', error: e);
+  }
+
+  // Dispose the temporary container
+  container.dispose();
+
   runApp(const ProviderScope(child: DivisApp()));
 }
 

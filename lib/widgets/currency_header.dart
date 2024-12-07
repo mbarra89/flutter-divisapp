@@ -22,15 +22,18 @@ class CurrencyHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
-          backgroundImage: AssetImage(
-            currencyCode == 'uf' || currencyCode == 'CLP'
-                ? 'assets/images/clp.png'
-                : currencyCode == 'dolar' || currencyCode == 'USD'
-                    ? 'assets/images/usd.png'
-                    : currencyCode == 'euro' || currencyCode == 'EUR'
-                        ? 'assets/images/eur.png'
-                        : 'assets/images/usd.png', // default fallback
-          ),
+          backgroundImage:
+              AssetImage(currencyCode == 'uf' || currencyCode == 'CLP'
+                  ? 'assets/images/clp.png'
+                  : currencyCode == 'dolar' || currencyCode == 'USD'
+                      ? 'assets/images/usd.png'
+                      : currencyCode == 'euro' || currencyCode == 'EUR'
+                          ? 'assets/images/eur.png'
+                          : (currencyCode == 'libra_cobre'
+                              ? 'assets/images/cobre.png'
+                              : currencyCode == 'bitcoin'
+                                  ? 'assets/images/bitcoin.png'
+                                  : 'assets/images/usd.png')),
         ),
         const SizedBox(width: 8),
         Expanded(

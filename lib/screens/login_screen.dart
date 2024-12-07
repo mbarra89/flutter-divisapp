@@ -1,4 +1,5 @@
 import 'package:divisapp/router.dart';
+import 'package:divisapp/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,6 +79,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -87,12 +90,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Iniciar Sesión',
                   style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: isDarkMode
+                          ? AppTheme.darkTitleTextColor
+                          : AppTheme.lightTitleTextColor),
                 ),
                 const SizedBox(height: 30),
 
@@ -101,10 +106,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Correo Electrónico',
-                    prefixIcon: const Icon(Icons.email),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    labelStyle: TextStyle(
+                      color: isDarkMode
+                          ? AppTheme.darkTextColor
+                          : AppTheme.lightTextColor,
                     ),
+                    prefixIcon: Icon(Icons.email,
+                        color: isDarkMode
+                            ? AppTheme.darkIconColor
+                            : AppTheme.lightIconColor),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                            color: isDarkMode
+                                ? AppTheme.darkBorderColor
+                                : AppTheme.lightBorderColor)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                            color: isDarkMode
+                                ? AppTheme.darkBorderColor
+                                : AppTheme.lightBorderColor)),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -127,10 +149,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
-                    prefixIcon: const Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    labelStyle: TextStyle(
+                      color: isDarkMode
+                          ? AppTheme.darkTextColor
+                          : AppTheme.lightTextColor,
                     ),
+                    prefixIcon: Icon(Icons.lock,
+                        color: isDarkMode
+                            ? AppTheme.darkIconColor
+                            : AppTheme.lightIconColor),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                            color: isDarkMode
+                                ? AppTheme.darkBorderColor
+                                : AppTheme.lightBorderColor)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                            color: isDarkMode
+                                ? AppTheme.darkBorderColor
+                                : AppTheme.lightBorderColor)),
                   ),
                   obscureText: true,
                   validator: (value) {
@@ -152,7 +191,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Text(
                       _errorMessage,
                       style: const TextStyle(
-                        color: Colors.red,
+                        color: AppTheme.errorMessageColor,
                         fontSize: 14,
                       ),
                     ),
@@ -166,6 +205,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
+                    backgroundColor: isDarkMode
+                        ? AppTheme.accentGoldColor
+                        : AppTheme.accentGoldColor,
+                    foregroundColor: isDarkMode
+                        ? AppTheme.accentButtonTextColor
+                        : AppTheme.accentButtonTextColor,
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   child: _isLoading
                       ? const CircularProgressIndicator()
@@ -181,12 +227,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         // TODO: Implement forgot password navigation
                         // context.push(AppRoute.forgotPassword.path);
                       },
+                      style: TextButton.styleFrom(
+                        foregroundColor: isDarkMode
+                            ? AppTheme.alertButtonTextColor
+                            : AppTheme.accentGoldColor,
+                      ),
                       child: const Text('¿Olvidaste tu contraseña?'),
                     ),
                     TextButton(
                       onPressed: () {
                         context.push(AppRoute.registro.path);
                       },
+                      style: TextButton.styleFrom(
+                        foregroundColor: isDarkMode
+                            ? AppTheme.accentGoldColor
+                            : AppTheme.accentGoldColor,
+                      ),
                       child: const Text('Registrarse'),
                     ),
                   ],

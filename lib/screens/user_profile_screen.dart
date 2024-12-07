@@ -1,4 +1,5 @@
 import 'package:divisapp/providers/theme_provider.dart';
+import 'package:divisapp/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -84,10 +85,10 @@ class UserProfile extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.cake,
                             size: 16,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: AppTheme.darkIconColor,
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -109,9 +110,9 @@ class UserProfile extends ConsumerWidget {
                               ),
                               const SizedBox(height: 16),
                               ListTile(
-                                leading: Icon(
+                                leading: const Icon(
                                   Icons.email,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AppTheme.darkIconColor,
                                 ),
                                 title: Text(user.email),
                               ),
@@ -128,10 +129,8 @@ class UserProfile extends ConsumerWidget {
                           icon: const Icon(Icons.logout),
                           label: const Text('Cerrar Sesión'),
                           style: ElevatedButton.styleFrom(
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onError,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.error,
+                            foregroundColor: AppTheme.darkTextColor,
+                            backgroundColor: AppTheme.errorMessageColor,
                           ),
                         ),
                       ),

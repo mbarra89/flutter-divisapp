@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:divisapp/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,6 +111,8 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registro'),
@@ -125,10 +128,27 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
                 controller: _nombreCompletoController,
                 decoration: InputDecoration(
                   labelText: 'Nombre Completo',
-                  prefixIcon: const Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  labelStyle: TextStyle(
+                    color: isDarkMode
+                        ? AppTheme.darkTextColor
+                        : AppTheme.lightTextColor,
                   ),
+                  prefixIcon: Icon(Icons.person,
+                      color: isDarkMode
+                          ? AppTheme.darkIconColor
+                          : AppTheme.lightIconColor),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                          color: isDarkMode
+                              ? AppTheme.darkBorderColor
+                              : AppTheme.lightBorderColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                          color: isDarkMode
+                              ? AppTheme.darkBorderColor
+                              : AppTheme.lightBorderColor)),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -148,10 +168,27 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Correo Electrónico',
-                  prefixIcon: const Icon(Icons.email),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  labelStyle: TextStyle(
+                    color: isDarkMode
+                        ? AppTheme.darkTextColor
+                        : AppTheme.lightTextColor,
                   ),
+                  prefixIcon: Icon(Icons.email,
+                      color: isDarkMode
+                          ? AppTheme.darkIconColor
+                          : AppTheme.lightIconColor),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                          color: isDarkMode
+                              ? AppTheme.darkBorderColor
+                              : AppTheme.lightBorderColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                          color: isDarkMode
+                              ? AppTheme.darkBorderColor
+                              : AppTheme.lightBorderColor)),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
@@ -173,10 +210,27 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
-                  prefixIcon: const Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  labelStyle: TextStyle(
+                    color: isDarkMode
+                        ? AppTheme.darkTextColor
+                        : AppTheme.lightTextColor,
                   ),
+                  prefixIcon: Icon(Icons.lock,
+                      color: isDarkMode
+                          ? AppTheme.darkIconColor
+                          : AppTheme.lightIconColor),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                          color: isDarkMode
+                              ? AppTheme.darkBorderColor
+                              : AppTheme.lightBorderColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                          color: isDarkMode
+                              ? AppTheme.darkBorderColor
+                              : AppTheme.lightBorderColor)),
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -198,13 +252,30 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Fecha de Nacimiento',
-                      prefixIcon: const Icon(Icons.calendar_today),
+                      labelStyle: TextStyle(
+                        color: isDarkMode
+                            ? AppTheme.darkTextColor
+                            : AppTheme.lightTextColor,
+                      ),
+                      prefixIcon: Icon(Icons.calendar_today,
+                          color: isDarkMode
+                              ? AppTheme.darkIconColor
+                              : AppTheme.lightIconColor),
                       hintText: _fechaNacimiento != null
                           ? '${_fechaNacimiento!.day}/${_fechaNacimiento!.month}/${_fechaNacimiento!.year}'
                           : 'Selecciona tu fecha de nacimiento',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                              color: isDarkMode
+                                  ? AppTheme.darkBorderColor
+                                  : AppTheme.lightBorderColor)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                              color: isDarkMode
+                                  ? AppTheme.darkBorderColor
+                                  : AppTheme.lightBorderColor)),
                     ),
                   ),
                 ),
@@ -232,6 +303,13 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
+                  backgroundColor: isDarkMode
+                      ? AppTheme.accentGoldColor
+                      : AppTheme.accentGoldColor,
+                  foregroundColor: isDarkMode
+                      ? AppTheme.accentButtonTextColor
+                      : AppTheme.accentButtonTextColor,
+                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator()
